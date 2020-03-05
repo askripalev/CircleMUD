@@ -80,7 +80,7 @@ void diag_char_to_char(struct char_data *i, struct char_data *ch);
 void look_at_char(struct char_data *i, struct char_data *ch);
 void list_one_char(struct char_data *i, struct char_data *ch);
 void list_char_to_char(struct char_data *list, struct char_data *ch);
-void do_auto_exits(struct char_data *ch);
+//---Woland void do_auto_exits(struct char_data *ch);
 ACMD(do_exits);
 void look_in_direction(struct char_data *ch, int dir);
 void look_in_obj(struct char_data *ch, char *arg);
@@ -349,6 +349,7 @@ void list_char_to_char(struct char_data *list, struct char_data *ch)
 }
 
 
+/*---Woland
 void do_auto_exits(struct char_data *ch)
 {
   int door, slen = 0;
@@ -358,16 +359,23 @@ void do_auto_exits(struct char_data *ch)
   for (door = 0; door < NUM_OF_DIRS; door++) {
     if (!EXIT(ch, door) || EXIT(ch, door)->to_room == NOWHERE)
       continue;
-    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED))
+    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED) && !EXIT_FLAGGED(EXIT(ch, door), EX_LOCKED))
+    {
+      send_to_char(ch, "(%c) ", LOWER(*dirs[door]));
       continue;
-
+    }
+    if (EXIT_FLAGGED(EXIT(ch, door), EX_LOCKED))
+    {
+      send_to_char(ch, "<%c> ", LOWER(*dirs[door]));
+      continue;
+    }
     send_to_char(ch, "%c ", LOWER(*dirs[door]));
     slen++;
   }
 
   send_to_char(ch, "%s]%s\r\n", slen ? "" : "None!", CCNRM(ch, C_NRM));
 }
-
+*/
 
 ACMD(do_exits)
 {
@@ -430,13 +438,14 @@ void look_at_room(struct char_data *ch, int ignore_brief)
     send_to_char(ch, "%s", world[IN_ROOM(ch)].description);
 
   /* autoexits */
-  if (!IS_NPC(ch) && PRF_FLAGGED(ch, PRF_AUTOEXIT))
+/* ---Woland 
+   if (!IS_NPC(ch) && PRF_FLAGGED(ch, PRF_AUTOEXIT))
     do_auto_exits(ch);
-
+*/
   /* now list characters & objects */
-  send_to_char(ch, "%s", CCGRN(ch, C_NRM));
-  list_obj_to_char(world[IN_ROOM(ch)].contents, ch, SHOW_OBJ_LONG, FALSE);
   send_to_char(ch, "%s", CCYEL(ch, C_NRM));
+  list_obj_to_char(world[IN_ROOM(ch)].contents, ch, SHOW_OBJ_LONG, FALSE);
+  send_to_char(ch, "%s", CCRED(ch, C_NRM));
   list_char_to_char(world[IN_ROOM(ch)].people, ch);
   send_to_char(ch, "%s", CCNRM(ch, C_NRM));
 }
@@ -1574,7 +1583,8 @@ ACMD(do_toggle)
 	  "Hit Pnt Display: %-3s    "
 	  "     Brief Mode: %-3s    "
 	  " Summon Protect: %-3s\r\n"
-
+          "      Exps left: %-3s    "
+          "           Gold: %-3s    "
 	  "   Move Display: %-3s    "
 	  "   Compact Mode: %-3s    "
 	  "       On Quest: %-3s\r\n"
@@ -1596,7 +1606,9 @@ ACMD(do_toggle)
 	  ONOFF(PRF_FLAGGED(ch, PRF_DISPHP)),
 	  ONOFF(PRF_FLAGGED(ch, PRF_BRIEF)),
 	  ONOFF(!PRF_FLAGGED(ch, PRF_SUMMONABLE)),
-
+	  ONOFF(PRF_FLAGGED(ch, PRF_DISPEXP)),
+	  ONOFF(PRF_FLAGGED(ch, PRF_DISPGOLD)),
+	  
 	  ONOFF(PRF_FLAGGED(ch, PRF_DISPMOVE)),
 	  ONOFF(PRF_FLAGGED(ch, PRF_COMPACT)),
 	  YESNO(PRF_FLAGGED(ch, PRF_QUEST)),
