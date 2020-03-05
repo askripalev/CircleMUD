@@ -1012,7 +1012,7 @@ char *make_prompt(struct descriptor_data *d)
     } diagnosis[] = {
       { 100   , "Perfect"  , KGRN  },
       {  90   , "Very good", KGRN  },
-      {  75   , "Good"     , KDGRN },
+      {  75   , "Good"     , KYEL },
       {  50   , "Fair"     , KYEL  },
       {  30   , "Bad"      , KDYEL },
       {  15   , "Very bad" , KRED  },
