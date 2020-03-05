@@ -4,10 +4,12 @@ log/*
 !log/README
 lib/etc/*
 !lib/etc/README
-src/Makefile
 config.status
 config.cache
 config.log
+src/conf.h
+src/util/Makefile
+src/Makefile
 
 # Prerequisites
 *.d

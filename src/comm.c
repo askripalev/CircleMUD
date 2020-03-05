@@ -1042,7 +1042,7 @@ char *make_prompt(struct descriptor_data *d)
 
     if (PRF_FLAGGED(d->character, PRF_AUTOEXIT) && len < sizeof(prompt)) {
 
-      count = snprintf(prompt + len, sizeof(prompt) - len, "Exits:[");
+      count = snprintf(prompt + len, sizeof(prompt) - len, "Exits:");
       if (count >= 0)
         len += count;
 
@@ -1060,7 +1060,7 @@ char *make_prompt(struct descriptor_data *d)
 
     if (EXIT_FLAGGED(EXIT(d->character, door), EX_LOCKED))
     {
-      count = snprintf(prompt + len, sizeof(prompt) - len, "<%c>", UPPER(*dirs[door]));
+      count = snprintf(prompt + len, sizeof(prompt) - len, "[%c]", UPPER(*dirs[door]));
       if (count >= 0)
         len += count;
       continue;
@@ -1073,7 +1073,7 @@ char *make_prompt(struct descriptor_data *d)
     slen++;
   }
   
-    count = snprintf(prompt + len, sizeof(prompt) - len, "%s]", slen ? "" : "None!");
+    count = snprintf(prompt + len, sizeof(prompt) - len, "%s", slen ? "" : "None!");
       if (count >= 0)
         len += count;
 
