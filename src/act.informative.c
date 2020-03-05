@@ -1585,22 +1585,18 @@ ACMD(do_toggle)
 	  " Summon Protect: %-3s\r\n"
           "      Exps left: %-3s    "
           "           Gold: %-3s    "
-	  "   Move Display: %-3s    "
+	  "   Move Display: %-3s\r\n"
 	  "   Compact Mode: %-3s    "
-	  "       On Quest: %-3s\r\n"
-
-	  "   Mana Display: %-3s    "
+	  "       On Quest: %-3s    "
+	  "   Mana Display: %-3s\r\n"
 	  "         NoTell: %-3s    "
-	  "   Repeat Comm.: %-3s\r\n"
-
-	  " Auto Show Exit: %-3s    "
+	  "   Repeat Comm.: %-3s    "
+	  " Auto Show Exit: %-3s\r\n"
 	  "           Deaf: %-3s    "
-	  "     Wimp Level: %-3s\r\n"
-
-	  " Gossip Channel: %-3s    "
+	  "     Wimp Level: %-3s    "
+	  " Gossip Channel: %-3s\r\n"
 	  "Auction Channel: %-3s    "
-	  "  Grats Channel: %-3s\r\n"
-
+	  "  Grats Channel: %-3s"
 	  "    Color Level: %s\r\n",
 
 	  ONOFF(PRF_FLAGGED(ch, PRF_DISPHP)),

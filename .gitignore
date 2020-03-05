@@ -2,8 +2,6 @@ bin/*
 !bin/README
 log/*
 !log/README
-lib/etc/*
-!lib/etc/README
 config.status
 config.cache
 config.log
