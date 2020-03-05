@@ -54,11 +54,13 @@
 
 #include "structs.h"
 #include "utils.h"
+#include "screen.h"
 #include "comm.h"
 #include "interpreter.h"
 #include "handler.h"
 #include "db.h"
 #include "house.h"
+#include "constants.h"
 
 #ifdef HAVE_ARPA_TELNET_H
 #include <arpa/telnet.h>
@@ -116,6 +118,7 @@ RETSIGTYPE unrestrict_game(int sig);
 RETSIGTYPE reap(int sig);
 RETSIGTYPE checkpointing(int sig);
 RETSIGTYPE hupsig(int sig);
+int level_exp(int chclass, int level);
 ssize_t perform_socket_read(socket_t desc, char *read_point,size_t space_left);
 ssize_t perform_socket_write(socket_t desc, const char *txt,size_t length);
 void echo_off(struct descriptor_data *d);
@@ -996,8 +999,27 @@ char *make_prompt(struct descriptor_data *d)
 	    "\r\n[ Return to continue, (q)uit, (r)efresh, (b)ack, or page number (%d/%d) ]",
 	    d->showstr_page, d->showstr_count);
   } else if (STATE(d) == CON_PLAYING && !IS_NPC(d->character)) {
-    int count;
+    int count, ar_index;
+    int door, slen = 0;
+    int percent_char, percent_vict;
+    char state_char[10], state_vict[10];
+    char color_char[10], color_vict[10];
     size_t len = 0;
+    struct {
+      int percent;
+      const char *text;
+      const char *color;
+    } diagnosis[] = {
+      { 100   , "Perfect"  , KGRN  },
+      {  90   , "Very good", KGRN  },
+      {  75   , "Good"     , KDGRN },
+      {  50   , "Fair"     , KYEL  },
+      {  30   , "Bad"      , KDYEL },
+      {  15   , "Very bad" , KRED  },
+      {   0   , "Awful"    , KDRED },
+      {  -1   , "Dying"    , KDRED },
+      {  -1000, "UNDEFINED", KNRM  }
+    };
 
     *prompt = '\0';
 
@@ -1025,6 +1047,88 @@ char *make_prompt(struct descriptor_data *d)
         len += count;
     }
 
+    if (PRF_FLAGGED(d->character, PRF_DISPEXP) && len < sizeof(prompt)) {
+      count = snprintf(prompt + len, sizeof(prompt) - len, "%dX ", level_exp(GET_CLASS(d->character), GET_LEVEL(d->character) + 1) - GET_EXP(d->character));
+      if (count >= 0)
+        len += count;
+    }
+
+    if (PRF_FLAGGED(d->character, PRF_DISPGOLD) && len < sizeof(prompt)) {
+      count = snprintf(prompt + len, sizeof(prompt) - len, "%dC ", GET_GOLD(d->character));
+      if (count >= 0)
+        len += count;
+    }
+
+    if (PRF_FLAGGED(d->character, PRF_AUTOEXIT) && len < sizeof(prompt)) {
+
+      count = snprintf(prompt + len, sizeof(prompt) - len, "Exits:");
+      if (count >= 0)
+        len += count;
+
+  for (door = 0; door < NUM_OF_DIRS; door++) {
+    if (!EXIT(d->character, door) || EXIT(d->character, door)->to_room == NOWHERE)
+      continue;
+
+    if (EXIT_FLAGGED(EXIT(d->character, door), EX_CLOSED) && !EXIT_FLAGGED(EXIT(d->character, door), EX_LOCKED))
+    {
+      count = snprintf(prompt + len, sizeof(prompt) - len, "(%c)", UPPER(*dirs[door]));
+      if (count >= 0)
+        len += count;
+      continue;
+    }
+
+    if (EXIT_FLAGGED(EXIT(d->character, door), EX_LOCKED))
+    {
+      count = snprintf(prompt + len, sizeof(prompt) - len, "[%c]", UPPER(*dirs[door]));
+      if (count >= 0)
+        len += count;
+      continue;
+    }
+
+    count = snprintf(prompt + len, sizeof(prompt) - len, "%c", UPPER(*dirs[door]));
+      if (count >= 0)
+        len += count;
+
+    slen++;
+  }
+  
+    count = snprintf(prompt + len, sizeof(prompt) - len, "%s", slen ? "" : "None!");
+      if (count >= 0)
+        len += count;
+
+    }
+
+   if (FIGHTING(d->character))
+   {
+       percent_char = (100 * GET_HIT(d->character)) / GET_MAX_HIT(d->character);
+       percent_vict = (100 * GET_HIT(FIGHTING(d->character))) / GET_MAX_HIT(FIGHTING(d->character));
+
+       if (percent_char < 0)
+         percent_char = -1;
+
+      if (percent_vict < 0)
+         percent_vict = -1;
+
+       for (ar_index = 0; diagnosis[ar_index].percent >= -1; ar_index++)
+        if (percent_char >= diagnosis[ar_index].percent)
+        { 
+          strcpy(state_char, diagnosis[ar_index].text);
+          strcpy(color_char, diagnosis[ar_index].color);
+          break;
+        }
+
+       for (ar_index = 0; diagnosis[ar_index].percent >= -1; ar_index++)
+        if (percent_vict >= diagnosis[ar_index].percent)
+        {
+          strcpy(state_vict, diagnosis[ar_index].text);
+          strcpy(color_vict, diagnosis[ar_index].color);
+          break;
+        }
+       count = snprintf(prompt + len, sizeof(prompt) - len, " [%s: %s%s%s] [%s: %s%s%s] ", PERS(d->character, d->character), color_char, state_char, KNRM, PERS(FIGHTING(d->character), d->character), color_vict, state_vict, KNRM);
+      if (count >= 0)
+        len += count;
+   }    
+	
     if (len < sizeof(prompt))
       strncat(prompt, "> ", sizeof(prompt) - len - 1);	/* strncat: OK */
   } else if (STATE(d) == CON_PLAYING && IS_NPC(d->character))

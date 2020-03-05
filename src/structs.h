@@ -215,6 +215,8 @@
 #define PRF_NOGRATZ	(1 << 20) /* Can't hear grats channel		*/
 #define PRF_ROOMFLAGS	(1 << 21) /* Can see room flags (ROOM_x)	*/
 #define PRF_DISPAUTO	(1 << 22) /* Show prompt HP, MP, MV when < 30%.	*/
+#define PRF_DISPEXP	(1 << 23) /* Display remaining EXP to next lvl	*/
+#define PRF_DISPGOLD	(1 << 24) /* Display gold coins on hand		*/
 
 /* Affect bits: used in char_data.char_specials.saved.affected_by */
 /* WARNING: In the world files, NEVER set the bits marked "R" ("Reserved") */
@@ -486,7 +488,7 @@
 
 /* Variables for the output buffering system */
 #define MAX_SOCK_BUF            (12 * 1024) /* Size of kernel's sock buf   */
-#define MAX_PROMPT_LENGTH       96          /* Max length of prompt        */
+#define MAX_PROMPT_LENGTH       196          /* Max length of prompt        */
 #define GARBAGE_SPACE		32          /* Space for **OVERFLOW** etc  */
 #define SMALL_BUFSIZE		1024        /* Static output buffer size   */
 /* Max amount of output that can be buffered */

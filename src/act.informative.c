@@ -80,7 +80,7 @@ void diag_char_to_char(struct char_data *i, struct char_data *ch);
 void look_at_char(struct char_data *i, struct char_data *ch);
 void list_one_char(struct char_data *i, struct char_data *ch);
 void list_char_to_char(struct char_data *list, struct char_data *ch);
-void do_auto_exits(struct char_data *ch);
+//---Woland void do_auto_exits(struct char_data *ch);
 ACMD(do_exits);
 void look_in_direction(struct char_data *ch, int dir);
 void look_in_obj(struct char_data *ch, char *arg);
@@ -349,6 +349,7 @@ void list_char_to_char(struct char_data *list, struct char_data *ch)
 }
 
 
+/*---Woland
 void do_auto_exits(struct char_data *ch)
 {
   int door, slen = 0;
@@ -358,16 +359,23 @@ void do_auto_exits(struct char_data *ch)
   for (door = 0; door < NUM_OF_DIRS; door++) {
     if (!EXIT(ch, door) || EXIT(ch, door)->to_room == NOWHERE)
       continue;
-    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED))
+    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED) && !EXIT_FLAGGED(EXIT(ch, door), EX_LOCKED))
+    {
+      send_to_char(ch, "(%c) ", LOWER(*dirs[door]));
       continue;
-
+    }
+    if (EXIT_FLAGGED(EXIT(ch, door), EX_LOCKED))
+    {
+      send_to_char(ch, "<%c> ", LOWER(*dirs[door]));
+      continue;
+    }
     send_to_char(ch, "%c ", LOWER(*dirs[door]));
     slen++;
   }
 
   send_to_char(ch, "%s]%s\r\n", slen ? "" : "None!", CCNRM(ch, C_NRM));
 }
-
+*/
 
 ACMD(do_exits)
 {
@@ -383,19 +391,28 @@ ACMD(do_exits)
   for (door = 0; door < NUM_OF_DIRS; door++) {
     if (!EXIT(ch, door) || EXIT(ch, door)->to_room == NOWHERE)
       continue;
-    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED))
+/*    if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED))
       continue;
-
+*/
     len++;
 
     if (GET_LEVEL(ch) >= LVL_IMMORT)
-      send_to_char(ch, "%-5s - [%5d] %s\r\n", dirs[door], GET_ROOM_VNUM(EXIT(ch, door)->to_room),
-		world[EXIT(ch, door)->to_room].name);
+    {
+      if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED) && EXIT(ch, door)->keyword)
+        send_to_char(ch, "%-5s - The %s is closed.\r\n", dirs[door], fname(EXIT(ch, door)->keyword));
+      else
+        send_to_char(ch, "%-5s - [%5d] %s\r\n", dirs[door], GET_ROOM_VNUM(EXIT(ch, door)->to_room),
+	  	  world[EXIT(ch, door)->to_room].name);
+    }
     else
-      send_to_char(ch, "%-5s - %s\r\n", dirs[door], IS_DARK(EXIT(ch, door)->to_room) &&
-		!CAN_SEE_IN_DARK(ch) ? "Too dark to tell." : world[EXIT(ch, door)->to_room].name);
+    {
+      if (EXIT_FLAGGED(EXIT(ch, door), EX_CLOSED) && EXIT(ch, door)->keyword)
+        send_to_char(ch, "%-5s - The %s is closed.\r\n", dirs[door], fname(EXIT(ch, door)->keyword));
+      else
+        send_to_char(ch, "%-5s - %s\r\n", dirs[door], IS_DARK(EXIT(ch, door)->to_room) &&
+		  !CAN_SEE_IN_DARK(ch) ? "Too dark to tell." : world[EXIT(ch, door)->to_room].name);
+    }
   }
-
   if (!len)
     send_to_char(ch, " None.\r\n");
 }
@@ -430,13 +447,14 @@ void look_at_room(struct char_data *ch, int ignore_brief)
     send_to_char(ch, "%s", world[IN_ROOM(ch)].description);
 
   /* autoexits */
-  if (!IS_NPC(ch) && PRF_FLAGGED(ch, PRF_AUTOEXIT))
+/* ---Woland 
+   if (!IS_NPC(ch) && PRF_FLAGGED(ch, PRF_AUTOEXIT))
     do_auto_exits(ch);
-
+*/
   /* now list characters & objects */
-  send_to_char(ch, "%s", CCGRN(ch, C_NRM));
-  list_obj_to_char(world[IN_ROOM(ch)].contents, ch, SHOW_OBJ_LONG, FALSE);
   send_to_char(ch, "%s", CCYEL(ch, C_NRM));
+  list_obj_to_char(world[IN_ROOM(ch)].contents, ch, SHOW_OBJ_LONG, FALSE);
+  send_to_char(ch, "%s", CCRED(ch, C_NRM));
   list_char_to_char(world[IN_ROOM(ch)].people, ch);
   send_to_char(ch, "%s", CCNRM(ch, C_NRM));
 }
@@ -1574,29 +1592,28 @@ ACMD(do_toggle)
 	  "Hit Pnt Display: %-3s    "
 	  "     Brief Mode: %-3s    "
 	  " Summon Protect: %-3s\r\n"
-
-	  "   Move Display: %-3s    "
+          "      Exps left: %-3s    "
+          "           Gold: %-3s    "
+	  "   Move Display: %-3s\r\n"
 	  "   Compact Mode: %-3s    "
-	  "       On Quest: %-3s\r\n"
-
-	  "   Mana Display: %-3s    "
+	  "       On Quest: %-3s    "
+	  "   Mana Display: %-3s\r\n"
 	  "         NoTell: %-3s    "
-	  "   Repeat Comm.: %-3s\r\n"
-
-	  " Auto Show Exit: %-3s    "
+	  "   Repeat Comm.: %-3s    "
+	  " Auto Show Exit: %-3s\r\n"
 	  "           Deaf: %-3s    "
-	  "     Wimp Level: %-3s\r\n"
-
-	  " Gossip Channel: %-3s    "
+	  "     Wimp Level: %-3s    "
+	  " Gossip Channel: %-3s\r\n"
 	  "Auction Channel: %-3s    "
-	  "  Grats Channel: %-3s\r\n"
-
+	  "  Grats Channel: %-3s"
 	  "    Color Level: %s\r\n",
 
 	  ONOFF(PRF_FLAGGED(ch, PRF_DISPHP)),
 	  ONOFF(PRF_FLAGGED(ch, PRF_BRIEF)),
 	  ONOFF(!PRF_FLAGGED(ch, PRF_SUMMONABLE)),
-
+	  ONOFF(PRF_FLAGGED(ch, PRF_DISPEXP)),
+	  ONOFF(PRF_FLAGGED(ch, PRF_DISPGOLD)),
+	  
 	  ONOFF(PRF_FLAGGED(ch, PRF_DISPMOVE)),
 	  ONOFF(PRF_FLAGGED(ch, PRF_COMPACT)),
 	  YESNO(PRF_FLAGGED(ch, PRF_QUEST)),

@@ -739,7 +739,7 @@ ACMD(do_display)
   skip_spaces(&argument);
 
   if (!*argument) {
-    send_to_char(ch, "Usage: prompt { { H | M | V } | all | auto | none }\r\n");
+    send_to_char(ch, "Usage: prompt { { H | M | V | X | C } | all | auto | none }\r\n");
     return;
   }
 
@@ -750,11 +750,11 @@ ACMD(do_display)
   }
 
   if (!str_cmp(argument, "on") || !str_cmp(argument, "all"))
-    SET_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE);
+    SET_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE | PRF_DISPEXP | PRF_DISPGOLD);
   else if (!str_cmp(argument, "off") || !str_cmp(argument, "none"))
-    REMOVE_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE);
+    REMOVE_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE | PRF_DISPEXP | PRF_DISPGOLD);
   else {
-    REMOVE_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE);
+    REMOVE_BIT(PRF_FLAGS(ch), PRF_DISPHP | PRF_DISPMANA | PRF_DISPMOVE | PRF_DISPEXP | PRF_DISPGOLD);
 
     for (i = 0; i < strlen(argument); i++) {
       switch (LOWER(argument[i])) {
@@ -767,8 +767,12 @@ ACMD(do_display)
       case 'v':
 	SET_BIT(PRF_FLAGS(ch), PRF_DISPMOVE);
 	break;
+      case 'x':
+	SET_BIT(PRF_FLAGS(ch), PRF_DISPEXP);
+      case 'c':
+        SET_BIT(PRF_FLAGS(ch), PRF_DISPGOLD);
       default:
-	send_to_char(ch, "Usage: prompt { { H | M | V } | all | auto | none }\r\n");
+	send_to_char(ch, "Usage: prompt { { H | M | V | X | C } | all | auto | none }\r\n");
 	return;
       }
     }
