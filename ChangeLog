@@ -1,5 +1,6 @@
 Release history:
 
+Version 3.2 beta pl1 fork at March, 04, 2020
 Version 3.1  (yes, no beta pl): November 18, 2002
 Version 3.00 beta pl22 release: October 4, 2002
 Version 3.00 beta pl21 release: April 15, 2002
@@ -34,13 +35,27 @@ Version 2.00 release: July 16, 1993 (Initial public release)
 
 Legend
 ------
-JE = Jeremy Elson (jelson@circlemud.org)	Since Jul 16, 1993
-AE = Alex Fletcher (furry@circlemud.org)	Since Feb 23, 1995
-GG = George Greer (greerga@circlemud.org)	Since Oct 14, 1997
-DK = Daniel A. Koepke (dkoepke@circlemud.org)	Since Jul 11, 1999
+JE = Jeremy Elson (jelson@circlemud.org)		Since Jul 16, 1993
+AE = Alex Fletcher (furry@circlemud.org)		Since Feb 23, 1995
+GG = George Greer (greerga@circlemud.org)		Since Oct 14, 1997
+DK = Daniel A. Koepke (dkoepke@circlemud.org)		Since Jul 11, 1999
+AS = Alexey Y. Skripalev (a.skripalev@gmail.com)	Since Mar 04, 2020
 
 <joke> New applicants must have a last name alphabetically after
 'Koepke' and will only be accepted on December 2, 2001. </joke>
+
+<joke2>AS has joined this good, but dead project.
+I promise not to violate the license.</joke2>
+
+--- CircleMUD 3.2 beta patchlevel 1
+3/5/20	AS	Added a battle statisitics to command prompt
+3/5/20	AS	Added an information of a closed doors to "exits"
+		command
+3/4/20	AS	Added a EXPs and Gold values to command prompt
+3/4/20	AS	Added an information of a closed doors to "Autoexits"
+		mode	
+3/4/20	AS	Autoexits moved from "room lookout" to command prompt
+3/4/20	AS	Added a light color versions of ANSI console fonts
 
 --- CircleMUD 3.0 patchlevel 3
 
