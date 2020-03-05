@@ -2,6 +2,7 @@
 ###### v3.1pl2 (2020-03-05):
 
 * Command "exits": doors are displaying now
+* Battle statistics is added to command prompt
 
 ###### v3.1pl1 (2020-03-04):
 

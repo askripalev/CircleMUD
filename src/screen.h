@@ -16,6 +16,13 @@
 #define KMAG  "\x1B[35;1m"
 #define KCYN  "\x1B[36;1m"
 #define KWHT  "\x1B[37;1m"
+#define KDRED  "\x1B[31m"
+#define KDGRN  "\x1B[32m"
+#define KDYEL  "\x1B[33m"
+#define KDBLU  "\x1B[34m"
+#define KDMAG  "\x1B[35m"
+#define KDCYN  "\x1B[36m"
+#define KDWHT  "\x1B[37m"
 #define KNUL  ""
 
 /* conditional color.  pass it a pointer to a char_data and a color level. */
