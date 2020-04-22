@@ -1074,6 +1074,7 @@ char *make_prompt(struct descriptor_data *d)
       count = snprintf(prompt + len, sizeof(prompt) - len, "(%c)", UPPER(*dirs[door]));
       if (count >= 0)
         len += count;
+      slen++;
       continue;
     }
 
@@ -1082,13 +1083,13 @@ char *make_prompt(struct descriptor_data *d)
       count = snprintf(prompt + len, sizeof(prompt) - len, "[%c]", UPPER(*dirs[door]));
       if (count >= 0)
         len += count;
+      slen++;
       continue;
     }
 
     count = snprintf(prompt + len, sizeof(prompt) - len, "%c", UPPER(*dirs[door]));
       if (count >= 0)
         len += count;
-
     slen++;
   }
   
