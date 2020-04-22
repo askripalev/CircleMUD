@@ -1,3 +1,4 @@
+# Some garbage stuff
 bin/*
 !bin/README
 log/*
@@ -8,6 +9,15 @@ config.log
 src/conf.h
 src/util/Makefile
 src/Makefile
+src/sysdep.h
+lib/plrobjs/A-E/*.objs
+lib/plrobjs/F-J/*.objs
+lib/plrobjs/K-O/*.objs
+lib/plrobjs/P-T/*.objs
+lib/plrobjs/U-Z/*.objs
+src/.accepted
+lib/etc/players
+lib/etc/time
 
 # Prerequisites
 *.d
